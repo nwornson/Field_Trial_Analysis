@@ -71,22 +71,28 @@ sim_data$Range = as.numeric(sim_data$Range)
 
 # Simulate the data, introducing some spatial variation
 
-####################new attempt############
-
 sim_data_v2 = sim_data %>%
   group_by(Trial) %>%
+  # Get trial means
   mutate(Trial_Mean = rnorm(n = 1, 
                             mean = 2.5,
                             sd = 2),
+         # Introduce range and row correlation
          row_var = runif(1,min = -1,max = 1),
          range_var = runif(1,min = -1,max = 1)) %>%
   group_by(Treatment,Trial) %>%
+          # Generate treatment means for each location
   mutate(trt_trl_mean = rnorm(1,mean = mean(Trial_Mean),sd = .05),
+         # win or lose per treatment
          success = runif(1,-.2,.2)) %>%
   ungroup() %>%
-  mutate(baseline = rnorm(1,treatment_mean,.01) + Row * row_var + Range * range_var,
+        # Simulate baseline and harvest data as functions of treatment mean,range and row
+  mutate(baseline = round(rnorm(1,treatment_mean,.01) + Row * row_var + Range * range_var,2),
          # Harvest, baseline plus win/loss
-         harvest = baseline + rnorm(1,success,.05))
+         harvest = round(baseline + rnorm(1,success,.05),2))
+
+
+write.csv(sim_data_v2,'simulated_data.csv',row.names = FALSE)
 
 
 ## Plot test
@@ -94,13 +100,22 @@ sim_data_v2 = sim_data %>%
 cols = c(1:5)
 sim_data_v2[cols] = lapply(sim_data_v2[cols],factor)
 
+# Treatment locations
+
+sim_data_v2  %>%
+  filter(Trial == 'Location 1') %>%
+  ggplot(aes(x = Row, y = Range)) +
+  geom_tile(color = 'black',fill = 'white') +  
+  geom_text(aes(label = Treatment), color = "black", size = 3) +
+  theme_classic()
+
 sim_data_v2  %>%
   filter(Trial == 'Location 1') %>%
   ggplot(aes(x = Row, y = Range, fill = baseline)) +
   geom_tile() +
   scale_fill_gradient(low="palevioletred",high="palegreen") +  
                       #limits = c(lwr,upr))+
-  geom_text(aes(label = baseline), color = "black", size = 2)
+  geom_text(aes(label = baseline), color = "black", size = 3)
             #angle = 90) 
 
 
@@ -110,5 +125,5 @@ sim_data_v2  %>%
   geom_tile() +
   scale_fill_gradient(low="palevioletred",high="palegreen") +  
   #limits = c(lwr,upr))+
-  geom_text(aes(label = harvest), color = "black", size = 2)
+  geom_text(aes(label = harvest), color = "black", size = 3)
             #angle = 90) 
