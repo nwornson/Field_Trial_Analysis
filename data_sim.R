@@ -1,9 +1,10 @@
 
-# Create fake trial data
+
 
 library(tidyverse)
 library(scales) # percent labels
 
+# Create fake trial data
 
 field_data = function(ntrials = 5, # number of locations
                       ntreatments = 10, # number of treatments
