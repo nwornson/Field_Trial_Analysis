@@ -1,11 +1,4 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
+
 
 library(shiny)
 library(tidyverse)
@@ -14,7 +7,14 @@ library(DT)
 direc = rstudioapi::getActiveDocumentContext()$path 
 setwd(dirname(direc))
 
-df = read.csv('simulated_data.csv')
+#df = read.csv('simulated_data.csv')
+
+# functions
+source('data_sim.R')
+
+df = field_data()
+df_L1 = L1_stats(df)
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -35,7 +35,21 @@ ui <- fluidPage(
         plotOutput('BL_Heat'),
         plotOutput('H_Heat')
         
-        )),
+        ),
+        
+        tabPanel(title = 'Win Rates',
+                 fluidRow(
+                   column(4,
+                          selectInput("Treatment","Treatment",
+                                      unique(as.character(df$Treatment[test$Treatment!= 'Control'])))
+                   )),
+        plotOutput('WR_trt')
+        
+        )
+        
+        
+    ),
+    
 
         
         
@@ -46,36 +60,19 @@ ui <- fluidPage(
 server <- function(input, output) {
   
     output$trt_Heat = renderPlot({
-      
-      df  %>%
-        filter(Trial == input$Trial) %>%
-        ggplot(aes(x = Row, y = Range)) +
-        geom_tile(color = 'black',fill = 'white') +  
-        geom_text(aes(label = Treatment), color = "black", size = 6) +
-        theme_classic()
+      trt_heat(df,input$Trial)
     })
 
     output$BL_Heat = renderPlot({
-        
-      df  %>%
-          filter(Trial == input$Trial) %>%
-          ggplot(aes(x = Row, y = Range, fill = baseline)) +
-          geom_tile() +
-          scale_fill_gradient(low="palevioletred",high="palegreen") + 
-          geom_text(aes(label = baseline), color = "black", size = 5)+
-        theme_classic()
+      BL_heat(df,input$Trial)
     })
     
     output$H_Heat = renderPlot({
-      
-      df  %>%
-        filter(Trial == input$Trial) %>%
-        ggplot(aes(x = Row, y = Range, fill = harvest)) +
-        geom_tile() +
-        scale_fill_gradient(low="palevioletred",high="palegreen") +
-        geom_text(aes(label = harvest), color = "black", size = 5)+
-        theme_classic()
-      
+      H_heat(df,input$Trial)
+    })
+    
+    output$WR_trt = renderPlot({
+      WR_bar(df_L1,input$Treatment)
     })
 }
 
