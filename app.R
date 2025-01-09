@@ -45,7 +45,16 @@ ui <- fluidPage(
                    )),
         plotOutput('WR_trt')
         
-        )
+        ),
+        
+        tabPanel("Summary",
+                 fluidRow(
+                   column(4,
+                          selectInput("Trial","Trial",
+                            unique(as.character(df$Trial)))
+                   )),
+                 dataTableOutput('Summaries'))
+        
         
         
     ),
@@ -74,6 +83,10 @@ server <- function(input, output) {
     output$WR_trt = renderPlot({
       WR_bar(df_L1,input$Treatment)
     })
+    
+    output$Summaries = renderDataTable(datatable({
+      display_stats(df,input$Trial)
+    }))
 }
 
 # Run the application 

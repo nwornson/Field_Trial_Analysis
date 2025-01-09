@@ -102,6 +102,14 @@ L1_stats = function(data){
   
 }
 
+display_stats = function(data,trial){
+  
+  L1 = L1_stats(data) %>%
+    filter(Trial == trial) %>%
+    select(-Trial) %>%
+    mutate(across(where(is.numeric),round,3))
+}
+
 #### Plotting functions
 
 # Treatment locations
@@ -156,7 +164,7 @@ H_heat = function(data,trial){
 
 WR_bar = function(data,trt){
   
-  boundry = .3
+  boundry = .5
   offset = .15
   max.tc = max(abs(data$CBuild.diff))
   
@@ -210,8 +218,8 @@ WR_bar = function(data,trt){
 
 
 # testing
-# test = field_data()
-# t1 = L1_stats(test)
+ test = field_data()
+ t1 = L1_stats(test)
 # pwr = WR_bar(t1,'Treatment a')
 # 
 # print(pwr)
