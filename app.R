@@ -53,7 +53,16 @@ ui <- fluidPage(
                           selectInput("Trial","Trial",
                             unique(as.character(df$Trial)))
                    )),
-                 dataTableOutput('Summaries'))
+                 dataTableOutput('Summaries')
+        ),
+        
+        tabPanel("Anova",
+                 fluidRow(
+                   column(4,
+                          selectInput("Trial","Trial",
+                                      unique(as.character(df$Trial)))
+                   )),
+                  dataTableOutput('anova'))
         
         
         
@@ -86,6 +95,10 @@ server <- function(input, output) {
     
     output$Summaries = renderDataTable(datatable({
       display_stats(df,input$Trial)
+    }))
+    
+    output$anova = renderDataTable(datatable({
+      display_anova(df,input$Trial)
     }))
 }
 

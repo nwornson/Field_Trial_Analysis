@@ -2,6 +2,7 @@
 
 
 library(tidyverse)
+library(broom)
 library(scales) # percent labels
 
 # Create fake trial data
@@ -84,7 +85,7 @@ field_data = function(ntrials = 5, # number of locations
 
 }
 
-### Data tranformation functions
+### Data tranformation/stats functions
 
 # Trial means, sd's
 
@@ -108,6 +109,17 @@ display_stats = function(data,trial){
     filter(Trial == trial) %>%
     select(-Trial) %>%
     mutate(across(where(is.numeric),round,3))
+}
+
+display_anova = function(data,trial){
+  
+  trial_data = data %>% 
+    filter(Trial == trial)
+  
+  m = lm(CBuild.ratio ~ Treatment + Replicate,trial_data)
+  
+  out = anova(m) %>% tidy()
+  
 }
 
 #### Plotting functions
@@ -220,6 +232,7 @@ WR_bar = function(data,trt){
 # testing
  test = field_data()
  t1 = L1_stats(test)
+ atest = display_anova(test,'Location 1')
 # pwr = WR_bar(t1,'Treatment a')
 # 
 # print(pwr)
