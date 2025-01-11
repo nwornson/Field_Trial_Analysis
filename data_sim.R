@@ -4,6 +4,7 @@
 library(tidyverse)
 library(broom)
 library(scales) # percent labels
+library(agricolae) # Multiple Hypothesis
 
 # Create fake trial data
 
@@ -103,6 +104,8 @@ L1_stats = function(data){
   
 }
 
+# Summary statistics
+
 display_stats = function(data,trial){
   
   L1 = L1_stats(data) %>%
@@ -111,6 +114,8 @@ display_stats = function(data,trial){
     mutate(across(where(is.numeric),round,3))
 }
 
+# Fixed effects only model - Anova
+
 display_anova = function(data,trial){
   
   trial_data = data %>% 
@@ -118,7 +123,39 @@ display_anova = function(data,trial){
   
   m = lm(CBuild.ratio ~ Treatment + Replicate,trial_data)
   
-  out = anova(m) %>% tidy()
+  out = anova(m) %>% 
+    tidy() %>%
+    mutate(across(where(is.numeric),round,4))
+  
+}
+
+# Dunnett's test for multiple comparisons (to control)
+
+display_dunnet = function(data,trial){
+  
+  trial_data = data %>% 
+    filter(Trial == trial)
+  
+  dt = DunnettTest(CBuild.ratio ~ Treatment,
+                   data = trial_data,
+                   control = 'Control')
+  
+  dt_df = data.frame(dt[1])
+  colnames(dt_df) = c('diff','lwr.ci','upr.ci','pval')
+  dt_df$trt = row.names(dt_df)
+  dt_df = dt_df %>%
+    separate(trt,c('Treatment.Name','ctrl'),sep = '-') %>%
+    relocate(Treatment.Name, .before = diff)
+  
+  dt_df = dt_df %>% select(-ctrl)
+  
+  row.names(dt_df) = NULL
+  
+  out = dt_df %>% 
+    #tidy() %>%
+    mutate(across(where(is.numeric),round,4))
+  
+  return(out) 
   
 }
 
@@ -129,7 +166,7 @@ display_anova = function(data,trial){
 trt_heat = function(data,trial){
   
   p = sim_data_v2  %>%
-  filter(Trial == 'Location 1') %>%
+  filter(Trial == trial) %>%
   ggplot(aes(x = Row, y = Range)) +
   geom_tile(color = 'black',fill = 'white') +  
   geom_text(aes(label = Treatment), color = "black", size = 3) +
@@ -144,7 +181,7 @@ trt_heat = function(data,trial){
 BL_heat = function(data,trial){ 
 
   p = sim_data_v2  %>%
-  filter(Trial == 'Location 1') %>%
+  filter(Trial == trial) %>%
   ggplot(aes(x = Row, y = Range, fill = baseline)) +
   geom_tile() +
   scale_fill_gradient(low="palevioletred",high="palegreen") +  
@@ -160,7 +197,7 @@ BL_heat = function(data,trial){
 H_heat = function(data,trial){
 
   p = sim_data_v2  %>%
-  filter(Trial == 'Location 1') %>%
+  filter(Trial == trial) %>%
   ggplot(aes(x = Row, y = Range, fill = harvest)) +
   geom_tile() +
   scale_fill_gradient(low="palevioletred",high="palegreen") +  

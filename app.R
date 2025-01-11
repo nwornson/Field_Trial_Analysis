@@ -56,13 +56,16 @@ ui <- fluidPage(
                  dataTableOutput('Summaries')
         ),
         
-        tabPanel("Anova",
+        tabPanel("Analysis",
                  fluidRow(
                    column(4,
                           selectInput("Trial","Trial",
                                       unique(as.character(df$Trial)))
                    )),
-                  dataTableOutput('anova'))
+                  dataTableOutput('anova'),
+                 dataTableOutput('dunnet')
+                 
+        )
         
         
         
@@ -74,7 +77,7 @@ ui <- fluidPage(
     
 )
 
-# Define server logic required to draw a histogram
+# Define server logic 
 server <- function(input, output) {
   
     output$trt_Heat = renderPlot({
@@ -94,12 +97,21 @@ server <- function(input, output) {
     })
     
     output$Summaries = renderDataTable(datatable({
-      display_stats(df,input$Trial)
-    }))
+      display_stats(df,input$Trial)},
+      options = list(dom = 't')
+    ))
     
     output$anova = renderDataTable(datatable({
-      display_anova(df,input$Trial)
-    }))
+      display_anova(df,input$Trial)},
+      caption = 'Fixed Effect Anova',
+      options = list(dom = 't')
+    ))
+    
+    output$dunnet = renderDataTable(datatable({
+      display_dunnet(df,input$Trial)},
+      caption = 'Dunnets Test',
+      options = list(dom = 't')
+    ))
 }
 
 # Run the application 
