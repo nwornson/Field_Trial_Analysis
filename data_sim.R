@@ -5,6 +5,7 @@ library(tidyverse)
 library(broom)
 library(scales) # percent labels
 library(agricolae) # Multiple Hypothesis
+library(DescTools) # Dunnett's Test
 
 # Create fake trial data
 
@@ -165,7 +166,7 @@ display_dunnet = function(data,trial){
 
 trt_heat = function(data,trial){
   
-  p = sim_data_v2  %>%
+  p = data  %>%
   filter(Trial == trial) %>%
   ggplot(aes(x = Row, y = Range)) +
   geom_tile(color = 'black',fill = 'white') +  
@@ -180,7 +181,7 @@ trt_heat = function(data,trial){
 # Baseline Heatmap
 BL_heat = function(data,trial){ 
 
-  p = sim_data_v2  %>%
+  p = data  %>%
   filter(Trial == trial) %>%
   ggplot(aes(x = Row, y = Range, fill = baseline)) +
   geom_tile() +
@@ -196,7 +197,7 @@ BL_heat = function(data,trial){
 
 H_heat = function(data,trial){
 
-  p = sim_data_v2  %>%
+  p = data  %>%
   filter(Trial == trial) %>%
   ggplot(aes(x = Row, y = Range, fill = harvest)) +
   geom_tile() +

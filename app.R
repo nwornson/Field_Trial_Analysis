@@ -4,10 +4,9 @@ library(shiny)
 library(tidyverse)
 library(DT)
 
-#direc = rstudioapi::getActiveDocumentContext()$path 
-#setwd(dirname(direc))
 
-#df = read.csv('simulated_data.csv')
+direc = rstudioapi::getActiveDocumentContext()$path 
+setwd(dirname(direc))
 
 # functions
 source('data_sim.R')
