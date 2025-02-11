@@ -352,6 +352,23 @@ WR_bar = function(data,trt){
 }
 
 
+
+## Distributions
+
+# box plot
+
+trial_box = function(data,trial){
+  
+  p = data %>%
+    filter(Trial == trial) %>%
+    ggplot(aes(Treatment,CBuild.ratio)) +
+    geom_boxplot() +
+    geom_point() +
+    theme_classic()
+  
+  return(p)
+}
+
 # testing
  test = field_data()
  t1 = L1_stats(test)
@@ -360,6 +377,9 @@ WR_bar = function(data,trt){
 # 
 # print(pwr)
  
+ boxp = trial_box(test,'Location 1')
+ 
+ print(boxp)
 
  field_var = field_var_HTOC(test,'Location 1')
 

@@ -55,6 +55,18 @@ ui <- fluidPage(
                  dataTableOutput('Summaries')
         ),
         
+        tabPanel("Distributions",
+                 fluidRow(
+                   column(4,
+                          selectInput("Trial","Trial",
+                                      unique(as.character(df$Trial)))
+                          
+                 )),
+                 plotOutput('trial_box_plot')
+                 
+          
+        ),
+        
         tabPanel("Analysis",
                  fluidRow(
                    column(4,
@@ -107,6 +119,10 @@ server <- function(input, output) {
       caption = 'Fixed Effect Anova',
       options = list(dom = 't')
     ))
+    
+    output$trial_box_plot = renderPlot({
+      trial_box(df,input$Trial)
+    })
     
     output$dunnet = renderDataTable(datatable({
       display_dunnet(df,input$Trial)},
