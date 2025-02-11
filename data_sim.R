@@ -6,6 +6,7 @@ library(broom)
 library(scales) # percent labels
 library(agricolae) # Multiple Hypothesis
 library(DescTools) # Dunnett's Test
+library(lmerTest)
 
 # Create fake trial data
 
@@ -101,7 +102,7 @@ L1_stats = function(data){
     mutate(CBuild.diff = Mean_CBuild.ratio - Mean_CBuild.ratio[grepl('Control',Treatment)],
            SE.CBuild.diff = sqrt(SE.CBuild.ratio^2 + SE.CBuild.ratio[Treatment == 'Control']^2)) 
   
-  
+  return(L1)
   
 }
 
@@ -113,6 +114,8 @@ display_stats = function(data,trial){
     filter(Trial == trial) %>%
     select(-Trial) %>%
     mutate(across(where(is.numeric),round,3))
+  
+  return(L1)
 }
 
 # Fixed effects only model - Anova
@@ -127,6 +130,8 @@ display_anova = function(data,trial){
   out = anova(m) %>% 
     tidy() %>%
     mutate(across(where(is.numeric),round,4))
+  
+  return(out)
   
 }
 
@@ -160,6 +165,86 @@ display_dunnet = function(data,trial){
   
 }
 
+## Mixed effects model
+
+ME_model_trt = function(data,trial){
+  
+  tempdf = tempdf = data %>%
+    filter(Trial == trial)
+  
+  model1 = lmer(baseline ~ Treatment + (1|Range) + (1|Row),tempdf)
+  m1.sum = anova(model1) %>% 
+    tidy()
+  
+
+  
+  return(m1.sum)
+  
+}
+
+
+## field variation
+
+library(lme4)
+field_var_BLTOC = function(data,trial) {
+  
+  
+  tempdf = data %>%
+    filter(Trial == trial)
+  
+  resp_mean = mean(tempdf$baseline)
+  
+  model1 = lmer(baseline ~ Treatment + (1|Range) + (1|Row),tempdf)
+  m1.sum = summary(model1)
+  sigma1 = m1.sum$sigma
+  
+  cv1 = sigma1/resp_mean
+  sigma_range = m1.sum$varcor$Range[1]
+  sigma_row = m1.sum$varcor$Row[1]
+  
+  # compute field variation by taking rg and row variation as a fraction of sum
+  total_var = sum(sigma_range,sigma_row,sigma1^2)
+  range_fv = sigma_range/total_var
+  row_fv = sigma_row/total_var
+  
+  out = paste(round(cbind(sigma1,range_fv,row_fv,cv1),5) * 100,'%',sep = '')
+  
+  out = data.frame(out,
+                   row.names = c('Residual','Range','Row','Coeficient of Variation'))
+  colnames(out) = 'Value' 
+  
+}
+
+field_var_HTOC = function(data,trial) {
+  
+  
+  tempdf = data %>%
+    filter(Trial == trial)
+  
+  resp_mean = mean(tempdf$harvest)
+  
+  model1 = lmer(harvest ~ Treatment + (1|Range) + (1|Row),tempdf)
+  m1.sum = summary(model1)
+  sigma1 = m1.sum$sigma
+  
+  cv1 = sigma1/resp_mean
+  sigma_range = m1.sum$varcor$Range[1]
+  sigma_row = m1.sum$varcor$Row[1]
+  
+  # compute field variation by taking rg and row variation as a fraction of sum
+  total_var = sum(sigma_range,sigma_row,sigma1^2)
+  range_fv = sigma_range/total_var
+  row_fv = sigma_row/total_var
+  
+  out = paste(round(cbind(sigma1,range_fv,row_fv,cv1),5) * 100,'%',sep = '')
+  
+  out = data.frame(out,
+                   row.names = c('Residual','Range','Row','Coeficient of Variation'))
+  colnames(out) = 'Value' 
+  
+  return(out)
+  
+}
 #### Plotting functions
 
 # Treatment locations
@@ -274,11 +359,14 @@ WR_bar = function(data,trt){
 # pwr = WR_bar(t1,'Treatment a')
 # 
 # print(pwr)
+ 
+
+ field_var = field_var_HTOC(test,'Location 1')
+
+ field_var
 
 
-
-
-
+me_test_trt =  ME_model(test,'Location 1')
 
 
 

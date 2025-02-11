@@ -62,7 +62,9 @@ ui <- fluidPage(
                                       unique(as.character(df$Trial)))
                    )),
                   dataTableOutput('anova'),
-                 dataTableOutput('dunnet')
+                 dataTableOutput('dunnet'),
+                 dataTableOutput('field_var_BL'),
+                 dataTableOutput('field_var_H')
                  
         )
         
@@ -109,6 +111,18 @@ server <- function(input, output) {
     output$dunnet = renderDataTable(datatable({
       display_dunnet(df,input$Trial)},
       caption = 'Dunnets Test',
+      options = list(dom = 't')
+    ))
+    
+    output$field_var_B = renderDataTable(datatable({
+      field_var_BLTOC(df,input$Trial)},
+      caption = 'Field Variation - Baseline Sampling',
+      options = list(dom = 't')
+    ))
+    
+    output$field_var_H = renderDataTable(datatable({
+      field_var_HTOC(df,input$Trial)},
+      caption = 'Field Variation - Harvest Sampling',
       options = list(dom = 't')
     ))
 }
