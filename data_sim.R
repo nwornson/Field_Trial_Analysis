@@ -370,23 +370,15 @@ trial_box = function(data,trial){
 }
 
 # testing
- test = field_data()
- t1 = L1_stats(test)
- atest = display_anova(test,'Location 1')
+
+# test = field_data()
+# t1 = L1_stats(test)
+# atest = display_anova(test,'Location 1')
 # pwr = WR_bar(t1,'Treatment a')
 # 
 # print(pwr)
  
- boxp = trial_box(test,'Location 1')
- 
- print(boxp)
 
- field_var = field_var_HTOC(test,'Location 1')
-
- field_var
-
-
-me_test_trt =  ME_model(test,'Location 1')
 
 
 
