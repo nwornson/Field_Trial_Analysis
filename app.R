@@ -9,7 +9,7 @@ library(DT)
 #setwd(dirname(direc))
 
 # functions
-source('data_sim.R')
+source('app_functions.R')
 
 df = field_data()
 df_L1 = L1_stats(df)
