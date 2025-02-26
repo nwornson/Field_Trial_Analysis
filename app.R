@@ -15,13 +15,13 @@ df = field_data()
 df_L1 = L1_stats(df)
 
 
-# Define UI for application that draws a histogram
+# Define UI
 ui <- fluidPage(
 
     # Application title
     titlePanel("Field Trial Analysis"),
 
-    # Sidebar with a slider input for number of bins 
+    # panels 
     tabsetPanel(
         tabPanel("Heatmaps",
                  fluidRow(
