@@ -5,8 +5,8 @@ library(tidyverse)
 library(DT)
 
 
-#direc = rstudioapi::getActiveDocumentContext()$path 
-#setwd(dirname(direc))
+direc = rstudioapi::getActiveDocumentContext()$path 
+setwd(dirname(direc))
 
 # functions
 source('data_sim.R')
@@ -40,7 +40,7 @@ ui <- fluidPage(
                  fluidRow(
                    column(4,
                           selectInput("Treatment","Treatment",
-                                      unique(as.character(df$Treatment[test$Treatment!= 'Control'])))
+                                      unique(as.character(df$Treatment[df$Treatment!= 'Control'])))
                    )),
         plotOutput('WR_trt')
         
