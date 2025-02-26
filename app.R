@@ -5,8 +5,8 @@ library(tidyverse)
 library(DT)
 
 
-direc = rstudioapi::getActiveDocumentContext()$path 
-setwd(dirname(direc))
+#direc = rstudioapi::getActiveDocumentContext()$path 
+#setwd(dirname(direc))
 
 # functions
 source('data_sim.R')
