@@ -6,7 +6,10 @@ library(broom)
 library(scales) # percent labels
 library(agricolae) # Multiple Hypothesis
 library(DescTools) # Dunnett's Test
-library(lmerTest)
+library(lmerTest) # Mixed Effects Modeling
+#library(RPostgreSQL)  
+library(odbc) # Save to SQL server
+library(DBI)
 
 # Create fake trial data
 
@@ -371,7 +374,7 @@ trial_box = function(data,trial){
 
 # testing
 
-# test = field_data()
+
 # t1 = L1_stats(test)
 # atest = display_anova(test,'Location 1')
 # pwr = WR_bar(t1,'Treatment a')
