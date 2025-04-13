@@ -4,9 +4,9 @@ library(shiny)
 library(tidyverse)
 library(DT)
 
-
-#direc = rstudioapi::getActiveDocumentContext()$path 
-#setwd(dirname(direc))
+# uncomment this if running locally
+direc = rstudioapi::getActiveDocumentContext()$path 
+setwd(dirname(direc))
 
 # functions
 source('app_functions.R')

@@ -60,6 +60,8 @@ print(rdata.shape)
 # Update database
 chem_data_sim.to_sql('chemical',con=conn,if_exists='replace',index=False)
 
+# save to .csv
+chem_data_sim.to_csv('chemical.csv')
 
 # Update SQL server with R data
 
