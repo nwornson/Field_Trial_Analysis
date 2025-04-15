@@ -4,7 +4,7 @@ import pandas as pd
 from itertools import repeat
 
 
-params = pd.read_csv('C:/Users/NickW/OneDrive/Documents/Shiny_app/Field_Trial_Analysis/params.csv')
+params = pd.read_csv('C:/Users/NickW/OneDrive/Documents/Shiny_app/Field_Trial_Analysis/data/params.csv')
 
 conn = sqlite3.connect('Field_Data.db')
 params = pd.read_sql('SELECT * FROM chem_params',conn)
@@ -65,5 +65,5 @@ chem_data_sim.to_csv('chemical.csv')
 
 # Update SQL server with R data
 
-Carbon_Data = pd.read_csv('sample_data.csv')
+Carbon_Data = pd.read_csv('data/sample_data.csv')
 Carbon_Data.to_sql('Carbon',con=conn,if_exists='replace',index=False)
