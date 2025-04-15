@@ -380,28 +380,6 @@ trial_box = function(data,trial){
 #write.csv(test,'sample_data.csv',row.names = FALSE)
 #write.csv(t1,'sample_data_L1.csv',row.names = FALSE)
 
-# atest = display_anova(test,'Location 1')
-pwr = WR_bar(t1,'Treatment a')
-# 
-print(pwr)
- 
-
-t1 = test %>%
-  filter(Treatment == 'Treatment b',
-         Trial == 'Location 1')
-
-
-t1
-
-avg_bl = mean(t1$baseline)
-avg_H = mean(t1$harvest)
-
-avg_H/avg_bl
-
-mean(t1$CBuild.ratio)
-
-
-
 
 
 
