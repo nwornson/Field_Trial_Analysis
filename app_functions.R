@@ -40,7 +40,8 @@ field_data = function(ntrials = 5, # number of locations
                               Replicate,
                               Row))
   
-  sim_data = sim_data %>% group_by(Trial) %>%
+  sim_data = sim_data %>% 
+    group_by(Trial) %>%
     arrange(desc(Replicate),.by_group = TRUE)
   
   Range = c()
@@ -81,6 +82,7 @@ field_data = function(ntrials = 5, # number of locations
     mutate(baseline = round(rnorm(1,trt_trl_mean,.01) + Row * row_var + Range * range_var,2),
            # Harvest, baseline plus win/loss
            harvest = round(baseline + rnorm(1,success,.05),2),
+           # Carbon Build metric for analysis
            CBuild.ratio = harvest/baseline)
   
   # Turn row and range to factors

@@ -38,15 +38,12 @@ row_seq = range(1,Row_size + 1)
 Row = sorted(list(row_seq) * 10)
 Row = Row * 5
 
-# location
+# Create location variable
 locs = ['Location ' + str(x) for x in range(1,6)]
 
 location = locs * 50
 
 location = sorted(location)
-location
-
-
 
 chem_data_sim = pd.DataFrame(rdata,columns=chems)
 
@@ -54,8 +51,15 @@ chem_data_sim['Location'] = location
 chem_data_sim['Range'] = Range
 chem_data_sim['Row'] = Row
 
-print(rdata.shape)
-#print(chem_data_sim.head())
+
+
+
+print(chem_data_sim.shape)
+
+# Reshape data frame for ease in visualizations
+chem_data_sim = chem_data_sim.melt(id_vars=['Location','Range','Row'])
+
+print(chem_data_sim.shape)
 
 # Update database
 chem_data_sim.to_sql('chemical',con=conn,if_exists='replace',index=False)
